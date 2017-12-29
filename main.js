@@ -10,15 +10,15 @@ var paddleWidth = 75;
 var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
-var brickRowCount = 5;
-var brickColumnCount = 3;
+var brickRowCount = 9;
+var brickColumnCount = 14;
 var brickWidth = 75;
 var brickHeight = 20;
 var brickPadding = 10;
 var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 var score = 0;
-
+var lives = 3;
 //blokjes
 var bricks = [];
 for(c=0; c<brickColumnCount; c++) {
@@ -100,14 +100,27 @@ function drawBricks() {
 }
 }
 
-// balletje beweegt
+
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("Score: "+score, 8, 20);
+}
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
     collisionDetection();
+
 
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
@@ -120,10 +133,20 @@ function draw() {
             dy = -dy;
         }
         else {
-            alert("GAME OVER");
-            document.location.reload();
-        }
-    }
+            lives--;
+            if(!lives) {
+                alert("GAME OVER");
+                document.location.reload();
+            }
+            else {
+                x = canvas.width/2;
+                y = canvas.height-30;
+                dx = 3;
+                dy = -3;
+                paddleX = (canvas.width-paddleWidth)/2;
+}
+}
+}
 
     if(rightPressed && paddleX < canvas.width-paddleWidth) {
         paddleX += 7;
@@ -134,14 +157,7 @@ function draw() {
 
     x += dx;
     y += dy;
+    requestAnimationFrame(draw);
 }
-// snelheid van het balletje
-setInterval(draw, 10);
 
-
-// scorebord
-function drawScore() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "red";
-    ctx.fillText("Score: "+score, 8, 20);
-}
+draw();
